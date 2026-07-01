@@ -1,0 +1,118 @@
+# 1 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+;tdP.1D			;td 11/09/2024
+;ex zgig
+;1D sequence with inverse gated decoupling
+;
+;$CLASS=HighRes
+;$DIM=1D
+;$TYPE=
+;$SUBTYPE=
+;$COMMENT=
+
+;--- 1H (f2) ---
+;sfo2 ~ 3.5 [ppm] (center of H{31P} for decoupling)
+;o2 ~ 3.5 [ppm] (center of H{31P} for decoupling)
+;cnst61 >= 4 [ppm] bandwidth of 1H{31P} for decoupling
+;p1 = 90deg on 1H (@ pl2)
+;pl2 = for p1=90deg on 1H
+;cpdprg2 = ### DIPSI2.p61 ###
+;p61 ~ 1/(4*SWH[1H{X-coupled}]) (90deg 1H dec. pulse) 
+;--- 31P (f1) ---
+;p5 <= 90deg on 31P (@pl1)
+;pl1 = for p5=90deg on 31P
+;---- Delays ----
+;d1 = TOTAL interscan delay (1.25*T1(31P) for max.SN, >3*T1(31P) for quantification)
+
+# 1 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl" 1
+;Avance4.incl
+;   for AV 4
+;
+;avance-version (16/08/18)
+;
+;$CLASS=Common Incl
+;$COMMENT=
+
+
+# 19 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+;setrtp0 denotes TimingController
+
+
+# 50 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+# 51 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+
+
+# 63 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+# 89 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+# 90 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+
+
+# 123 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+;#define LOWQ
+;#define HIGHQ
+
+
+;#define MIX_UP
+;#define MIX_DOWN
+# 136 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/Avance.incl"
+;$Id:$
+# 26 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D" 2
+
+;------------ Definitions ---------
+;--- 1H(f2) ---
+"l11=(aq/115.12)*(4*cnst61*bf2/1000000)"  ;DIPSI2 supercycles for 1H decoupling
+"p61=aq/(l11*115.12)"                     ;matched 1H DIPSI2 decoupler pulse
+"plw12 = plw2*pow(p1/p61,2)"
+
+define delay d1a
+define delay d1c
+"d11=30m"
+"d1a=(aq+d11)"
+"d1c=d1-d1a"
+# 39 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+"acqt0=-p5*2/PI"
+
+# 1 "mc_line 41 file /root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D exp. def. part of mc cmd. before ze"
+; dimension 1D; AQ_mode 
+define delay MCWRK
+define delay MCREST
+"MCREST = d11 - d11"
+"MCWRK = 0.333333*d11"
+# 41 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+1 ze
+# 1 "mc_line 41 file /root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D exp. def. of mc cmd. after ze"
+# 42 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+  1m pl2:f2
+  (p1 ph1):f2
+  d11 pl12:f2
+# 1 "mc_line 45 file /root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D exp. start label for mc cmd."
+2 MCWRK  * 2 do:f2
+LBLF0, MCWRK 
+  MCREST
+# 46 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+  d1c
+  p5 ph1
+  go=2 ph31 cpd2:f2
+# 1 "mc_line 49 file /root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D exp. mc cmd. in line"
+  MCWRK do:f2 wr #0
+  MCWRK zd
+  lo to LBLF0 times td0
+
+# 50 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+exit
+
+ph1=0 2 2 0 1 3 3 1
+ph31=0 2 2 0 1 3 3 1
+# 55 "/root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/lists/pp/tdP.1D"
+;pl1 : f1 channel - power level for pulse (default)
+;pl12: f2 channel - power level for CPD/BB decoupling
+;p1 : f1 channel -  high power pulse
+;d1 : relaxation delay; 1-5 * T1
+;d11: delay for disk I/O                             [30 msec]
+;ns: 1 * n, total number of scans: NS * TD0
+;cpd2: decoupling according to sequence defined by cpdprg2
+;pcpd2: f2 channel - 90 degree pulse for decoupling sequence
+
+;$Id: zgig,v 1.10.8.1 2012/01/31 17:56:42 ber Exp $

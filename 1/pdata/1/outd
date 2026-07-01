@@ -1,0 +1,16 @@
+##TITLE= Parameter file, TopSpin 4.3.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= nmr
+$$ 2024-12-17 09:16:57.577 +0100  nmr@rmn600.cicbiogune.int
+$$ /opt/topspin4.3.0/prog/curdir/changer/inmrchanger/Oct11-2024-1242-OMlab/4/4.88/data/nmr/P31_SOP_Standards/1484/pdata/1/outd
+$$ process /opt/topspin4.3.0/prog/mod/xwish3
+##$CURPLOT= <Cups-PDF>
+##$CURPRIN= <$Cups-PDF>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1D_BB.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##END=

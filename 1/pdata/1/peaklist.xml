@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PeakList>
+  <PeakList1D>
+    <PeakList1DHeader creator="nmr" date="2024-12-18T17:25:30.704+01:00" expNo="2721" name="P31metabol_Casqueria_240423" owner="" procNo="1" source="/opt/nmr600/data/nmr/OMLab/Phosphonomics">
+      <PeakPickDetails>F1=54.579750ppm, F2=-24.579716ppm, MI=0.00cm, MAXI=10000.00cm, PC=1.400
+      </PeakPickDetails>
+    </PeakList1DHeader>
+    <Peak1D F1="53.221225" intensity="5.702135e+00" type="0"/>
+    <Peak1D F1="22.871015" intensity="7.711494e+00" type="0"/>
+    <Peak1D F1="3.700412" intensity="2.548534e+00" type="0"/>
+    <Peak1D F1="2.459389" intensity="1.500000e+01" type="0"/>
+    <Peak1D F1="-0.221718" intensity="5.285653e+00" type="0"/>
+  </PeakList1D>
+</PeakList>

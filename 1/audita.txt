@@ -1,0 +1,26 @@
+##TITLE= Audit trail, TopSpin 4.3.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= root
+$$ /root/.topspin-BladeEpu/local_acqu/P31metabol_Casqueria_240423/2721/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2024-12-18T10:24:09.262+0000>,<nmr>,<rmn600>,<go4>,<TopSpin 4.3.0>,
+      <acquisition in progress>)
+$$ /opt/nmr600/data/nmr/OMLab/Phosphonomics/P31metabol_Casqueria_240423/2721/audita.txt
+(   2,<2024-12-18T16:25:46.539+0000>,<nmr>,<rmn600>,<go4>,<TopSpin 4.3.0>,
+      <created by zg on 'Avance' (rmn600) by user 'nmr'
+       on data set with UUID '37a03740-bd2a-11ef-b702-0030d62e2987'
+       started at 2024-12-18 10:24:09.261 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2024-12-18 16:25:46.538 +0000
+       configuration hash MD5:
+       3B D4 B6 8C 6B FF 47 8A 1A 32 64 2B D4 07 8D 58
+       double data hash MD5: 64K
+       A2 91 29 DB 9E 28 7B 72 32 CA 86 31 72 D4 A2 7B>)
+(   3,<2024-12-18T17:25:25.129+0100>,<nmr>,<rmn600.cicbiogune.int>,<xwish3>,<TopSpin 4.3.0>,
+      <ICON-NMR User ID: OMlab
+       double data hash MD5: 64K
+       A2 91 29 DB 9E 28 7B 72 32 CA 86 31 72 D4 A2 7B>)
+##END=
+
+$$ hash MD5
+$$ 71 DE 0B 9B AC 11 7F 11 1B 17 4F DE 58 9E 08 82

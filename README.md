@@ -100,7 +100,7 @@ Fit amplitudes, chemical shifts, T2 values, or other selected parameters as requ
 Save the simulation or fit results.
 
 ## Example
-This repository includes an example TopSpin-style data folder named: 1
+This repository includes an example TopSpin-style data folder named: 1. with a 1D 31P experiment.
 
 To open the example dataset in MR-SHIFT, use the following settings in the app:
 Path: .

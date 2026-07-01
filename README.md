@@ -1,10 +1,10 @@
-MR-SHIFT
+## MR-SHIFT
 
 MR-SHIFT is a MATLAB App Designer application for simulating, fitting, and analysing NMR spectra using spin-system information stored in a user-defined metabolite database.
 
 The app is designed to work with Bruker TopSpin data and supports simulation and fitting workflows for 1D spectra, T1/T2 relaxation analyses, and selected 2D simulations.
 
-Main files
+## Main files
 MR_SHIFT_1p3.mlapp
 Main MATLAB App Designer application. This is the file to open and run in MATLAB.
 getTopSpinAddLB.m
@@ -28,7 +28,7 @@ FastFIDgeneration_1p3.m
 
 Modifying these files may change the numerical behaviour of the simulations and fits.
 
-Requirements
+## Requirements
 
 This app was tested using MATLAB R2024b.
 
@@ -57,23 +57,15 @@ MR_SHIFT_1p3.mlapp
 
 Alternatively, the app can be opened from the MATLAB file browser by double-clicking MR_SHIFT_1p3.mlapp.
 
-Input data
+## Input data
 
 MR-SHIFT is intended to read processed Bruker TopSpin data.
 
-The TopSpin data folder should contain the standard Bruker experiment structure, for example:
-
-TopSpinDataFolder/
-└── expno/
-    ├── acqus
-    └── pdata/
-        └── procno/
-            ├── procs
-            └── ...
+The TopSpin data folder should contain the standard Bruker experiment structure.
 
 The function getTopSpinAddLB.m is responsible for reading the experimental and processing parameters from the TopSpin files.
 
-Database format
+## Database format
 
 Metabolites and spin systems are defined in a MATLAB structure called simDB.
 
@@ -97,7 +89,7 @@ Chemical shifts are given in ppm and J-couplings are given in Hz.
 
 Users can create their own database by editing the database creation script and saving the resulting .mat database file.
 
-Basic workflow
+## Basic workflow
 Prepare or load a metabolite database.
 Open MR_SHIFT_1p3.mlapp.
 Select the TopSpin data folder and experiment/processing numbers.
@@ -106,7 +98,17 @@ Add metabolites from the database.
 Simulate the selected spin systems.
 Fit amplitudes, chemical shifts, T2 values, or other selected parameters as required.
 Save the simulation or fit results.
-Line broadening
+
+## Example
+This repository includes an example TopSpin-style data folder named: 1
+
+To open the example dataset in MR-SHIFT, use the following settings in the app:
+Path: .
+Experiment number: 1 
+
+The corresponding fitresult is also included: fitresult_1.m
+
+## Line broadening
 
 MR-SHIFT supports additional line broadening through the TopSpin data-reading function.
 
@@ -114,23 +116,24 @@ The line broadening mode can be interpreted in two ways:
 
 extra: add additional exponential line broadening on top of the TopSpin processing value.
 total: use the specified value as the total exponential line broadening.
-Outputs
+
+## Outputs
 
 Depending on the workflow, MR-SHIFT can generate and save simulated spectra, fitted parameters, fit results, and database-derived simulations.
 
 The exact output depends on the selected fitting or simulation mode.
 
-Citation
+## Citation
 
 If you use MR-SHIFT in published work, please cite the associated publication:
 
 [Add citation once available]
 
-License
+## License
 
 [Add license information here.]
 
-Contact
+## Contact
 
 For questions, bug reports, or suggestions, please contact:
 

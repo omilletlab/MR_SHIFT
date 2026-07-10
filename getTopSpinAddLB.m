@@ -1,6 +1,19 @@
 %Function for MRSHIFT
 %Function to read out experimental and processing parameters from Topspin
 
+%GETTOPSPINADDLB Import and process a Bruker TopSpin spectrum.
+%
+% Inputs:
+%   path01 - Root directory containing the numbered TopSpin experiment.
+%   l      - Processing number under pdata; 
+%   k      - TopSpin experiment number.
+%   scale  - Divisor applied to the final complex spectrum.
+%   AddLB  - Additional or total line-broadening parameter (see LBmode).
+%   LBmode - 'extra' (default) or 'total'.
+%
+% Output:
+%   expParams - Processed spectrum, ppm axis, and selected metadata.
+
 function [expParams]=getTopSpinAddLB(path01,l,k,scale,AddLB,LBmode)
 % Load and process a TopSpin spectrum with optional LB handling.
 %
@@ -24,17 +37,8 @@ if ~exist('LBmode', 'var') || isempty(LBmode)
     LBmode = 'extra';
 end
 
-%For reading difference spectra created with difference_noesy_CPMG
-if l == 1000
-    matFile = fullfile(path01, num2str(k), 'pdata', num2str(l), 'diffNOESYCPMG.mat');
 
-    S = load(matFile);
-    expParams = S.expParams;
-
-    return
-end
-
-%Get Acquisition parameter
+%% Read acquisition parameters
 acqus = fopen(fullfile(path01, num2str(k), 'acqus'));
 B=textscan(acqus, '%s' ) ;
 IndexB = strfind(B{1}, '$TD=' ); 
@@ -69,7 +73,7 @@ Index4 = find(not(cellfun( 'isempty' , IndexE)));
 NBL=str2num(B{1}{Index4+1});
 fclose(acqus);
 
-%Get proc paramater:
+%% Read direct-dimension processing parameters
 procs = fopen(fullfile(path01, num2str(k), 'pdata', num2str(l), 'procs'));
 B=textscan(procs, '%s' ) ;
 IndexB = strfind(B{1}, 'OFFSET' ); 
@@ -83,7 +87,7 @@ IndexC = strfind(B{1}, 'LB' );
 Index2 = find(not(cellfun( 'isempty' , IndexC))); 
 LB=str2num(B{1}{Index2+1});
 % LB
-% LB=0.8;
+LB=0.8;
 IndexD = strfind(B{1}, 'TDeff' ); 
 Index3 = find(not(cellfun( 'isempty' , IndexD))); 
 TDeff=str2num(B{1}{Index3+1});
@@ -104,7 +108,7 @@ Index6 = find(not(cellfun( 'isempty' , IndexG)));
 SSB=str2num(B{1}{Index6+1});
 fclose(procs);
 
-%Get proc2s size
+%% Read indirect-dimension size when proc2s exists
 proc2s = fopen(fullfile(path01, num2str(k), 'pdata', num2str(l), 'proc2s'));
 if proc2s~=-1
     B=textscan(proc2s, '%s' ); 
@@ -114,6 +118,9 @@ if proc2s~=-1
 fclose(proc2s);
 end
 
+%% Read raw time-domain data
+% The code first assumes int32 storage. If the sample count differs from
+% TD*NBL, it retries using float64 to support other TopSpin exports.
 %Open the actual data, which is normally either the fid file (1D) or ser
 %file (2D). Depending on the topspin version, it is saved as int32 or float
 %64. the following should take care of the various options by checking that
@@ -133,6 +140,8 @@ if length(data) ~= TD*NBL
 end
 fclose(serBruker);
 
+%% Reshape the raw stream
+% Each matrix column represents one acquired FID.
 %reshape vector into matrix according to number of points
 % % % np=size(data,1);
 data=reshape(data,np,size(data,1)/np);
@@ -144,13 +153,16 @@ if strcmp(LBmode, 'extra') && AddLB~=0
     TDeff = round(20*AddLB/dwell/2)*2; % and ensure even number
 end
 
-
+%% Reconstruct complex FIDs
+% Bruker stores alternating real and imaginary samples in the raw file.
 %separate real and imaginary and make complex dataset
 A = data(1:2:end,:);  % odd matrix
 B = data(2:2:end,:); % even matrix
 data=A+i*B;
 clear A B
 
+% TDeff is expressed in real values, hence division by two after complex
+% reconstruction. Extending the array to ZeroFill performs zero filling.
 %remove the first 69 points (the filter) and cut to TDeff
 datatemp=data(1:round(TDeff/2),:);
 datatemp(end:ZeroFill,:)=0; %Do also zero filling according to SI F2
@@ -160,15 +172,18 @@ clear datatemp
 %%
 
 
+%% Define the shifted time origin
+% The fixed PHC1b value estimates the digital-filter delay. The FID is
+% later circularly shifted so this estimated t=0 point comes first.
 %first order phase correction: Getting the smoothest baseline by instead of
 %removing the filter phase correct
-
 PHC1b=27360;
 tzero=round(PHC1b/360)+1; %Define t=0 point
 %define first point as t=0 and use dwell time to get rest
 t=dwell:dwell:dwell*(size(data,1));
 t=t-t(tzero);
 
+%% Determine the appodization function for the requested LB mode
 switch LBmode
     case 'extra'
         if AddLB~=0
@@ -186,6 +201,10 @@ switch LBmode
     otherwise
         error('Unknown LBmode: %s', LBmode);
 end
+
+%% Apply the selected TopSpin window function
+% Supported WDW codes here are 0 (none), 1 (exponential), 3 (sine/cosine
+% bell), and 4 (squared sine/cosine bell).
 %Line Broadening Do this before the actual phase correction, otherwise the
 %data axis doesnt match the time axis - but with the t=0 point in the right
 %place
@@ -227,7 +246,7 @@ elseif strcmp(LBmode, 'total') && WDW~=1
     warning('LBmode total currently only controls exponential LB cleanly for WDW==1.');
 end
 
-
+%% Circularly shift the FID to place the estimated t=0 point first
 if PHC1b>0
 dataL=data(1:tzero-1,:);
 dataR=data(tzero:pts(1),:);
@@ -240,7 +259,7 @@ clear dataR dataL
 
 
 
-
+%% Fourier transform and phase correction
 %Zeroth order phase correction from PHC0:
 % data=data*exp(-1i*(PHC0)/180*pi);
 data(1,:)=data(1,:)*1.0;%For nicer baseline
@@ -254,7 +273,7 @@ data(1,:)=data(1,:)*1.0;%For nicer baseline
 % data(1,size(data,2))=data(1,size(data,2))/2;
 SpecExp= circshift(fftshift(fft(data),1),-1,1);
 
-corrPHC=1+PHC1/PHC0;%To match phase in topspin seems to require this
+corrPHC=1+PHC1/PHC0;%To match phase in topspin requires this
 Phi=-corrPHC*PHC0+PHC1*[1:1:length(SpecExp)]'/length(SpecExp);
 
 F1DappReal=real(SpecExp).*cos(Phi/180*pi)-imag(SpecExp).*sin(Phi/180*pi);
@@ -263,7 +282,9 @@ F1DappImag=imag(SpecExp).*cos(Phi/180*pi)+real(SpecExp).*sin(Phi/180*pi);
 SpecExp=F1DappReal+1i*F1DappImag;
 SpecExp=SpecExp/scale;
 
-
+%% Construct frequency and chemical-shift axes
+% The Nyquist limits are +/-1/(2*dwell). BF1 converts Hz to ppm and
+% OFFSET aligns the resulting axis with the TopSpin spectrum.
 baxis=-1/(2*dwell)+1/(dwell*pts(1)):(1/(dwell*pts(1))):1/(2*dwell); % spectral width is given by 1/dwell. and maximal frequency by 1/2dwell (nyquist). from this and the used np calculate the step-size.
 
 baxisppm=baxis/BF1;
@@ -273,6 +294,7 @@ XAxis=baxisppm-baxisppm(end)+Offsetppm;%In ppm with Offset
 % plot(XAxis, SpecExp)
 % set(gca, 'XDir','reverse');
 
+%% Package the spectrum and metadata for downstream MR SHIFT routines
 expParams.SpecExpTot2D=SpecExp;
 expParams.pts=pts;
 expParams.dwell=dwell;

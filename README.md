@@ -141,4 +141,4 @@ See the [LICENSE](LICENSE) file for details.
 
 For questions, bug reports, or suggestions, please contact:
 
-[Add contact information here.]
+djardon@cicbiogune.es

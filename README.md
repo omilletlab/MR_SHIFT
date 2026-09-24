@@ -131,7 +131,11 @@ If you use MR-SHIFT in published work, please cite the associated publication:
 
 ## License
 
-[Add license information here.]
+This software is available for academic and non-commercial research use.
+Commercial use requires prior written authorization from CIC bioGUNE.
+
+See the [LICENSE](LICENSE) file for details.
+
 
 ## Contact
 

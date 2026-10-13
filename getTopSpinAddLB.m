@@ -37,7 +37,18 @@ if ~exist('LBmode', 'var') || isempty(LBmode)
     LBmode = 'extra';
 end
 
+%% Load a preprocessed difference spectrum
+% Processing number 1000 is reserved for results already saved as an
+% expParams structure by difference_noesy_CPMG.
+%For reading difference spectra created with difference_noesy_CPMG
+if l == 1000
+    matFile = fullfile(path01, num2str(k), 'pdata', num2str(l), 'diffNOESYCPMG.mat');
 
+    S = load(matFile);
+    expParams = S.expParams;
+
+    return
+end
 %% Read acquisition parameters
 acqus = fopen(fullfile(path01, num2str(k), 'acqus'));
 B=textscan(acqus, '%s' ) ;
@@ -87,7 +98,7 @@ IndexC = strfind(B{1}, 'LB' );
 Index2 = find(not(cellfun( 'isempty' , IndexC))); 
 LB=str2num(B{1}{Index2+1});
 % LB
-LB=0.8;
+% LB=0.0;
 IndexD = strfind(B{1}, 'TDeff' ); 
 Index3 = find(not(cellfun( 'isempty' , IndexD))); 
 TDeff=str2num(B{1}{Index3+1});
@@ -119,32 +130,57 @@ fclose(proc2s);
 end
 
 %% Read raw time-domain data
-% The code first assumes int32 storage. If the sample count differs from
-% TD*NBL, it retries using float64 to support other TopSpin exports.
-%Open the actual data, which is normally either the fid file (1D) or ser
-%file (2D). Depending on the topspin version, it is saved as int32 or float
-%64. the following should take care of the various options by checking that
-%the number of points of the data matches what it should from TD and NBL!
-serBruker = fopen(fullfile(path01, num2str(k), 'ser'));%Mac and windows have opposite slashes
-if serBruker==-1
-    serBruker = fopen(fullfile(path01, num2str(k), 'fid'));%Mac and windows have opposite slashes
-end
-data=fread(serBruker,'int32');
 
-if length(data) ~= TD*NBL
-    serBruker = fopen(fullfile(path01, num2str(k), 'ser'));%Mac and windows have opposite slashes
-    if serBruker==-1
-    serBruker = fopen(fullfile(path01, num2str(k), 'fid'));%Mac and windows have opposite slashes
+% Bruker stores each FID in blocks of 1024 bytes.
+% TD is the number of real acquired values; the raw file may contain
+% additional padding values at the end of each FID.
+
+dataFile = fullfile(path01, num2str(k), 'ser');
+isSER = exist(dataFile, 'file') == 2;
+
+if ~isSER
+    dataFile = fullfile(path01, num2str(k), 'fid');
+end
+
+%% First try int32
+bytesPerPoint = 4;
+pointsPerBlock = 1024 / bytesPerPoint;       % 256 int32 values/block
+storedTD = ceil(TD / pointsPerBlock) * pointsPerBlock;
+
+fidBruker = fopen(dataFile, 'r');
+data = fread(fidBruker, inf, 'int32');
+fclose(fidBruker);
+
+expectedLength = storedTD * NBL;
+
+%% If size does not fit int32 storage, try float64
+if length(data) ~= expectedLength
+
+    bytesPerPoint = 8;
+    pointsPerBlock = 1024 / bytesPerPoint;   % 128 doubles/block
+    storedTD = ceil(TD / pointsPerBlock) * pointsPerBlock;
+
+    fidBruker = fopen(dataFile, 'r');
+    data = fread(fidBruker, inf, 'float64');
+    fclose(fidBruker);
+
+    expectedLength = storedTD * NBL;
+
+    if length(data) ~= expectedLength
+        error(['Raw Bruker file size does not match TD/NBL for either ' ...
+               'int32 or float64 storage. File contains %d values.'], ...
+               length(data));
     end
-    data=fread(serBruker,'float64');
 end
-fclose(serBruker);
 
-%% Reshape the raw stream
-% Each matrix column represents one acquired FID.
-%reshape vector into matrix according to number of points
-% % % np=size(data,1);
-data=reshape(data,np,size(data,1)/np);
+%% Reshape using the stored dimension, then remove Bruker padding
+
+data = reshape(data, storedTD, NBL);
+
+% Keep only the actually acquired TD values
+data = data(1:TD, :);
+
+% From this point onwards, size(data,1) == TD
 
 %Number of points to calculate
 % In old "extra" mode, keep the previous behavior.

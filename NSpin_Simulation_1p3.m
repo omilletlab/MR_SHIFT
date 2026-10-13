@@ -391,150 +391,26 @@ clear allFFtemp max_index T2_temp T2_terms
 
 end %End blocks loop
 
-%%%%SHIMMING ISSUES!%%%%%
+
 %%%% SHIMMING ISSUES %%%%
-% Residual B0 field represented using Cartesian spherical harmonics
-% following the convention  https://doi.org/10.1002/cmr.1820020303 (The Ancient and Honourable Art of Shimming)
-%
-%   Z    = z
-%   Z2   = 2*z^2 - (x^2 + y^2)
-%   Z3   = z * [2*z^2 - 3*(x^2 + y^2)]
-%   Z4   = 8*z^2*[z^2 - 3*(x^2 + y^2)] + 3*(x^2 + y^2)^2
-%
-%   X    = x
-%   Y    = y
-%   XZ   = x*z
-%   YZ   = y*z
-%   XY   = x*y
-%   X2Y2 = x^2 - y^2
 
+%% Apply optional shim-induced FID modulation
 
-% % % % %% Shim coefficients
-% % % % % Units are Hz relative to the normalized spatial basis functions below.
-% % % % 
-% % % % Z1 = -0.60;     % Z
-% % % % Z2 = -0.50;     % Z2
-% % % % Z3 =  0.0;      % Z3
-% % % % Z4 =  0.0;      % Z4
-% % % % 
-% % % % X  =  0.0;      % X
-% % % % Y  =  0.0;      % Y
-% % % % 
-% % % % XZ =  0.0;      % XZ
-% % % % YZ =  0.0;      % YZ
-% % % % 
-% % % % XY    = 0.0;    % XY
-% % % % X2Y2  = 0.0;    % X2 - Y2
-% % % % 
-% % % % 
-% % % % %% Spatial grid / weighting
-% % % % % Normalized cylindrical sample:
-% % % % %
-% % % % %   x,y : circular cross-section with radius = 1
-% % % % %   z   : axial coordinate from -1 to +1
-% % % % %
-% % % % % Each point represents one spin packet in the sample.
-% % % % 
-% % % % Ns = 25000;   % Number of spatial spin packets
-% % % % 
-% % % % 
-% % % % % Uniform random points in circular cross-section
-% % % % theta = 2*pi*rand(Ns,1);
-% % % % 
-% % % % % sqrt(rand) is required for uniform sampling over disk AREA
-% % % % r = sqrt(rand(Ns,1));
-% % % % 
-% % % % x = r .* cos(theta);
-% % % % y = r .* sin(theta);
-% % % % 
-% % % % % Uniform sampling along z axis
-% % % % z = 2*rand(Ns,1) - 1;
-% % % % 
-% % % % 
-% % % % %% Spatial weighting
-% % % % % All sample positions contribute equally
-% % % % w = ones(Ns,1);
-% % % % w = w / sum(w);
-% % % % 
-% % % % 
-% % % % %% Cartesian spherical-harmonic basis functions
-% % % % 
-% % % % rho2 = x.^2 + y.^2;
-% % % % 
-% % % % % First order
-% % % % H_Z1 = z;
-% % % % H_X  = x;
-% % % % H_Y  = y;
-% % % % 
-% % % % % Second order
-% % % % H_Z2 = 2*z.^2 - rho2;
-% % % % H_XZ = x .* z;
-% % % % H_YZ = y .* z;
-% % % % H_X2Y2 = x.^2 - y.^2;
-% % % % H_XY   = x .* y;
-% % % % 
-% % % % % Third order
-% % % % H_Z3 = z .* (2*z.^2 - 3*rho2);
-% % % % 
-% % % % % Fourth order
-% % % % H_Z4 = 8*z.^2 .* (z.^2 - 3*rho2)  + 3*rho2.^2;
-% % % % 
-% % % % 
-% % % % %% Residual B0 frequency map
-% % % % % df gives the local resonance-frequency deviation in Hz
-% % % % % for every spatial spin packet.
-% % % % 
-% % % % df = ...
-% % % %       Z1    * H_Z1 ...
-% % % %     + Z2    * H_Z2 ...
-% % % %     + Z3    * H_Z3 ...
-% % % %     + Z4    * H_Z4 ...
-% % % %     + X     * H_X ...
-% % % %     + Y     * H_Y ...
-% % % %     + XZ    * H_XZ ...
-% % % %     + YZ    * H_YZ ...
-% % % %     + XY    * H_XY ...
-% % % %     + X2Y2  * H_X2Y2;
-% % % % 
-% % % % 
-% % % % %% Calculate spatially averaged phase evolution
-% % % % %
-% % % % % Each spatial position experiences a frequency offset df.
-% % % % % Its contribution therefore accumulates phase according to
-% % % % %
-% % % % %       exp(i * 2*pi * df * t)
-% % % % %
-% % % % % Averaging over the complete sample produces the shim-induced
-% % % % % distortion of the FID.
-% % % % 
-% % % % %% Compress the shim frequency distribution
-% % % % 
-% % % % nBins = 100;
-% % % % 
-% % % % [counts, edges] = histcounts(df, nBins);
-% % % % 
-% % % % % Frequency at the centre of each bin
-% % % % df_bin = (edges(1:end-1) + edges(2:end)) / 2;
-% % % % 
-% % % % % Remove empty bins
-% % % % keep = counts > 0;
-% % % % 
-% % % % df_bin = df_bin(keep);
-% % % % counts = counts(keep);
-% % % % 
-% % % % % Normalize weights
-% % % % weights_bin = counts / sum(counts);
-% % % % 
-% % % % 
-% % % % %% Calculate average shim phase
-% % % % 
-% % % % phase_avg = weights_bin * ...
-% % % %     exp(1i * 2*pi * (df_bin(:) * t));
-% % % % 
-% % % % 
-% % % % %% Apply shim effect
-% % % % 
-% % % % FID = FID .* phase_avg;
+if isfield(expParams, 'SimulationShimPhase') && ...
+        ~isempty(expParams.SimulationShimPhase)
+
+    phase_avg = expParams.SimulationShimPhase(:).';
+
+    if numel(phase_avg) ~= numel(FID)
+        error(['Shim phase length does not match the acquired FID. ' ...
+               'Recalculate the shim phase for the current acquisition.']);
+    end
+
+    FID = FID .* phase_avg;
+
+end
+
+% FID = FID .* phase_avg;
 
 
 %% Apply zero filling and acquisition-processing windows

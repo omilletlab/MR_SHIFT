@@ -146,50 +146,22 @@ end
 
 end %End blocks loop
 
-%%%%SHIMMING ISSUES!%%%%%
-% %Add z-Shim polynomial distribution:
-% Z1 =  -0.60;           % Hz
-% Z2 =  -1.10;           % Hz
-% Z3 =  0.0;           % Hz
-% Z4 =   0.0;           % Hz
-% X  = -0.0;    % X shim  -> linear in x
-% Y  = 0.0;   % Y shim  -> linear in y
-% XZ = 0;     % x*z
-% YZ = 0;     % y*z
-% XY = 0.0;     % x*y
-% X2Y2 = 00;   % (x^2 - y^2)
-% 
-% % Spatial grid / weighting
-% % ---------- Sample geometry (normalized cylinder) ----------
-% % x,y in disk radius 1; z in [-1,1]
-% Ns = 100;  % number of random spin packets (increase for smoother results)
-% 
-% % Uniform points in a cylinder:
-% theta = 2*pi*rand(Ns,1);
-% r     = sqrt(rand(Ns,1));       % sqrt for uniform area in disk
-% x     = r .* cos(theta);
-% y     = r .* sin(theta);
-% z     = 2*rand(Ns,1) - 1;
-% 
-% % Weighting: uniform sample
-% w = ones(Ns,1);                
-% w = w / sum(w);
-% 
-% % ---------- Residual frequency map df(x,y,z) ----------
-% df = X*x + Y*y + Z1*z ...
-%    + Z2*(z.^2) + Z3*(z.^3) + Z4*(z.^4) ...
-%    + XZ*(x.*z) + YZ*(y.*z) ...
-%    + XY*(x.*y) + X2Y2*(x.^2 - y.^2);   % Hz
-% 
-% % Spatially averaged phase factor:
-% phaseMat  = exp(1i * 2*pi * (df * t));      % [Nz x N]
-% phase_avg = (w.' * phaseMat);             % [1 x N]
-% 
-% % Bad-shim FID
-% % size(FID)
-% % size(phase_avg)
-% % size(ttot)
-% 
+%% Apply optional shim-induced FID modulation
+
+if isfield(expParams, 'SimulationShimPhase') && ...
+        ~isempty(expParams.SimulationShimPhase)
+
+    phase_avg = expParams.SimulationShimPhase(:).';
+
+    if numel(phase_avg) ~= numel(FID)
+        error(['Shim phase length does not match the acquired FID. ' ...
+               'Recalculate the shim phase for the current acquisition.']);
+    end
+
+    FID = FID .* phase_avg;
+
+end
+
 % FID = FID .* phase_avg;
 
 %% Zero-fill and apply the selected TopSpin processing window

@@ -227,6 +227,7 @@ for startIdx = 1:chunkSize:nTime
 
 end
 
+
 %% Return frequency distribution for diagnostics / GUI preview
 
 profile.freqHz = freqHz;

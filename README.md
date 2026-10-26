@@ -4,6 +4,16 @@ MR-SHIFT is a MATLAB App Designer application for simulating, fitting, and analy
 
 The app is designed to work with Bruker TopSpin data and supports simulation and fitting workflows for 1D spectra, T1/T2 relaxation analyses, and selected 2D simulations.
 
+## Stable publication version
+
+The validated version of MR-SHIFT associated with the publication is **v1.3.0**.
+
+For reproducibility of the analyses reported in the manuscript, please use
+the v1.3.0 release.
+
+The `main` branch may contain newer developments that have not yet undergone the
+same level of validation.
+
 ## Main files
 MR_SHIFT_1p3.mlapp
 Main MATLAB App Designer application. This is the file to open and run in MATLAB.

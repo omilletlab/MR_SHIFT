@@ -98,7 +98,7 @@ IndexC = strfind(B{1}, 'LB' );
 Index2 = find(not(cellfun( 'isempty' , IndexC))); 
 LB=str2num(B{1}{Index2+1});
 % LB
-% LB=0.0;
+LB=0.3;
 IndexD = strfind(B{1}, 'TDeff' ); 
 Index3 = find(not(cellfun( 'isempty' , IndexD))); 
 TDeff=str2num(B{1}{Index3+1});

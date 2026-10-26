@@ -1246,5 +1246,7 @@ clear metabolite w_CS_J T2 T1
 
 simNames = fieldnames(simDB);
 
-save(['database_phosphoromics_1H31P.mat'], '-struct', 'simDB');
+databaseFolder = fileparts(mfilename('fullpath'));
+
+save(fullfile(databaseFolder, 'database_phosphoromics_1H31P.mat'),'-struct', 'simDB');
 

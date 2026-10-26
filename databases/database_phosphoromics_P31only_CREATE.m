@@ -84,4 +84,6 @@ simDB.UTP = struct('w_CS_J', [-6.11 0 20.05; 0 -11.28 19.75;0 0 -22.01],'CSerr',
 
 fnames = fieldnames(simDB);  % Get all field names in data
 
-save('database_phosphoromics_P31only.mat', '-struct', 'simDB');
+databaseFolder = fileparts(mfilename('fullpath'));
+
+save(fullfile(databaseFolder, 'database_phosphoromics_P31only.mat'),'-struct', 'simDB');

@@ -16,15 +16,13 @@ function result = fitAsymmetricTail_1p3( ...
 %       GLBounds               GL bounds (default [0 2]).
 %       CSShiftStartHz         Initial reference chemical-shift offset (default 0 Hz).
 %       CSShiftBoundsHz        Allowed reference shift (default [-0.5 0.5] Hz).
-%       EtaStart               Initial tail fraction (default 0.1).
-%       EtaBounds              Tail-fraction bounds (default [0 0.6]).
 %       LambdaStartHz          Initial tail scale in Hz (default 0.5).
 %       LambdaBoundsHz         Tail-scale bounds in Hz (default [0.02 3]).
 %       UseNoiseInsensitiveLoss Use squared epsilon-insensitive loss.
 %       NoiseSigma             Experimental noise standard deviation.
 %       ResidualNoiseSigma     Threshold multiplier (default 2).
 %
-% T2, GL, reference CS shift, eta and lambda are nonlinear parameters.
+% T2, GL, reference CS shift and lambda are nonlinear parameters.
 % Amplitude is fitted linearly or with a one-dimensional noise-insensitive
 % objective. The reference CS shift is a local fitting parameter; no change
 % is made to params.w_CS_J or to the saved global tail modulation.
@@ -43,8 +41,6 @@ function result = fitAsymmetricTail_1p3( ...
         'GLBounds', [0 2], ...
         'CSShiftStartHz', 0, ...
         'CSShiftBoundsHz', [-0.5 0.5], ...
-        'EtaStart', 0.1, ...
-        'EtaBounds', [0 0.9], ...
         'LambdaStartHz', 0.5, ...
         'LambdaBoundsHz', [0.02 3], ...
         'UseNoiseInsensitiveLoss', false, ...
@@ -64,8 +60,6 @@ function result = fitAsymmetricTail_1p3( ...
     end
     validateattributes(options.T2StartFactor, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'positive'});
-    validateattributes(options.EtaStart, {'numeric'}, ...
-        {'scalar', 'real', 'finite'});
     validateattributes(options.LambdaStartHz, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'positive'});
     validateattributes(options.CSShiftStartHz, {'numeric'}, ...
@@ -84,15 +78,13 @@ function result = fitAsymmetricTail_1p3( ...
     bounds = [ ...
         params.T2 * options.T2BoundsFactors(:).'; ...
         options.GLBounds(:).'; ...
-        options.EtaBounds(:).'; ...
         options.LambdaBoundsHz(:).'; ...
         options.CSShiftBoundsHz(:).'];
-    if any(~isfinite(bounds(:))) || any(bounds(:, 1) >= bounds(:, 2)) || ...
-            any(bounds(1, :) <= 0) || bounds(2, 1) < 0 || ...
-            bounds(3, 1) < 0 || bounds(3, 2) > 1 || ...
-            any(bounds(4, :) <= 0)
-        error('Invalid T2, GL, eta, lambda or CS-shift bounds.');
-    end
+if any(~isfinite(bounds(:))) || any(bounds(:, 1) >= bounds(:, 2)) || ...
+        any(bounds(1, :) <= 0) || bounds(2, 1) < 0 || ...
+        any(bounds(3, :) <= 0)
+    error('Invalid T2, GL, lambda or CS-shift bounds.');
+end
 
     if isfield(expParams, 'SimulationShimPhase') && ...
             ~isempty(expParams.SimulationShimPhase)
@@ -145,28 +137,27 @@ function result = fitAsymmetricTail_1p3( ...
     end
 
     t2Start = params.T2 * options.T2StartFactor;
-    start = [t2Start, glStart, options.EtaStart, ...
-        options.LambdaStartHz, options.CSShiftStartHz];
+    start = [t2Start, glStart, options.LambdaStartHz, options.CSShiftStartHz];
     start = clampToBounds(start, bounds);
 
-    [zFit, tailLoss, tailExitFlag] = fminsearch( ...
+    [zFit, tailLoss, tailExitFlag, tailOutput] = fminsearch( ...
         @lossWithTail, encode(start, bounds), simplexOptions);
     candidate = decode(zFit, bounds);
+    
     [tailLoss, tailAmp, tailSpectrum] = evaluate( ...
-        candidate(1), candidate(2), candidate(3), ...
-        candidate(4), candidate(5));
+        candidate(1), candidate(2), ...
+        candidate(3), candidate(4), true);
 
-    noTailBounds = bounds([1 2 5], :);
-    noTailStart = clampToBounds(start([1 2 5]), noTailBounds);
-    [zNoTail, noTailLoss, noTailExitFlag] = fminsearch( ...
+    noTailBounds = bounds([1 2 4], :);
+    noTailStart = clampToBounds(start([1 2 4]), noTailBounds);
+    [zNoTail, noTailLoss, noTailExitFlag, noTailOutput] = fminsearch( ...
         @lossWithoutTail, encode(noTailStart, noTailBounds), simplexOptions);
     noTail = decode(zNoTail, noTailBounds);
     [noTailLoss, noTailAmp, noTailSpectrum] = evaluate( ...
-        noTail(1), noTail(2), 0, options.LambdaStartHz, noTail(3));
+        noTail(1), noTail(2), 0, noTail(3), false);
 
     if noTailLoss <= tailLoss + 1e-9 * max(1, noTailLoss)
-        best = [noTail(1), noTail(2), 0, ...
-            options.LambdaStartHz, noTail(3)];
+        best = [noTail(1), noTail(2), 0, noTail(3)];
         bestLoss = noTailLoss;
         bestAmp = noTailAmp;
         bestSpectrum = noTailSpectrum;
@@ -181,14 +172,17 @@ function result = fitAsymmetricTail_1p3( ...
 
     result.T2Original = params.T2;
     result.T2Optimized = best(1);
+    
     result.GLOriginal = params.GL;
     result.GLOptimized = best(2);
-    result.eta = best(3);
-    result.lambdaHz = best(4);
+    
+    result.lambdaHz = best(3);
     result.direction = options.Direction;
-    result.CSShiftHz = best(5);
+    
+    result.CSShiftHz = best(4);
+
     result.CSShiftNoTailHz = noTail(3);
-    result.CSShiftPPM = best(5) / expParams.BF1;
+    result.CSShiftPPM = best(4) / expParams.BF1;
     result.CSOriginalPPM = params.w_CS_J;
     result.CSOptimizedPPM = params.w_CS_J + result.CSShiftPPM;
     result.amplitudeFactor = bestAmp;
@@ -212,8 +206,10 @@ function result = fitAsymmetricTail_1p3( ...
     result.optimizerExitFlag = bestFlag;
     result.tailExitFlag = tailExitFlag;
     result.noTailExitFlag = noTailExitFlag;
+    result.tailOptimizerOutput = tailOutput;
+    result.noTailOptimizerOutput = noTailOutput;
     result.modulation = calculateAsymmetricTailPhase_1p3( ...
-        t, best(3), best(4), options.Direction);
+        t, best(3), options.Direction);
 
     function p = clampToBounds(p, localBounds)
         lo = localBounds(:, 1).';
@@ -238,23 +234,28 @@ function result = fitAsymmetricTail_1p3( ...
 
     function loss = lossWithTail(z)
         p = decode(z, bounds);
-        loss = evaluate(p(1), p(2), p(3), p(4), p(5));
+        loss = evaluate(p(1), p(2), p(3), p(4), true);
     end
 
     function loss = lossWithoutTail(z)
         p = decode(z, noTailBounds);
-        loss = evaluate(p(1), p(2), 0, options.LambdaStartHz, p(3));
+        loss = evaluate(p(1), p(2), 0, p(3), false);
     end
 
-    function [loss, ampFactor, spectrum] = evaluate(T2, GL, eta, lambdaHz, csShiftHz)
+function [loss, ampFactor, spectrum] = evaluate(T2, GL, lambdaHz, csShiftHz, useTail)
         trialParams = params;
         trialParams.T2 = T2;
         trialParams.GL = GL;
         trialExpParams = expParams;
-        trialExpParams.SimulationShimPhase = ...
-            calculateAsymmetricTailPhase_1p3( ...
-                t, eta, lambdaHz, options.Direction) .* ...
-            exp(1i * 2*pi * csShiftHz * t);
+        if useTail
+            tailModulation = calculateAsymmetricTailPhase_1p3( ...
+                t, lambdaHz, options.Direction);
+        else
+            tailModulation = ones(size(t));
+        end
+
+trialExpParams.SimulationShimPhase = ...
+    tailModulation .* exp(1i * 2*pi * csShiftHz * t);
 
         template = real(params.Amp * ...
             FastFIDgeneration_1p3(trialParams, trialExpParams, AddLB));

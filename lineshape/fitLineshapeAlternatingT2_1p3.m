@@ -1,6 +1,6 @@
 function result = fitLineshapeAlternatingT2_1p3( ...
     params, expParams, AddLB, ppmGrid, experimentalReference, fitMask, options)
-% Fit a single-spin reference with a frequency-offset grid and shared T2.
+% Fit a single-spin reference with a frequency-offset grid and shared T2/GL.
 %
 % Inputs
 %   params                Previously fitted single-spin MR-SHIFT parameters.
@@ -12,12 +12,15 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 %   options               Optional fields:
 %       T2StartFactor          Initial T2 / original T2 (default 1.2).
 %       T2BoundsFactors        T2 bounds / original T2 (default [0.5 3]).
+%       GLStart                Initial shared GL (default original GL).
+%       GLBounds               Shared GL bounds (default [0 2]).
 %       MaxIterations          Maximum outer iterations (default 30).
 %       RelativeTolerance      Relative change in selected objective RMSE
 %                              (default 1e-3, i.e. 0.1%).
 %       ConvergencePatience    Consecutive low-improvement iterations required
 %                              to stop (default 3).
 %       FminbndTolX            Tolerance in log(T2) (default 1e-4).
+%       GLFminbndTolX          Tolerance in GL units (default 1e-4).
 %       UseNoiseInsensitiveLoss Enable a squared epsilon-insensitive objective
 %                               (default false).
 %       NoiseSigma             Experimental noise standard deviation.
@@ -29,12 +32,13 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 % When enabled, the epsilon-insensitive loss is
 %   sum(max(abs(experimental - predicted) - delta, 0).^2),
 %   delta = ResidualNoiseSigma * NoiseSigma.
-% The same loss is used for amplitude optimisation, T2 optimisation,
+% The same loss is used for amplitude optimisation, T2/GL optimisation,
 % monotonicity checks and convergence. Ordinary RMSE is always reported.
 % The stopping rule tracks relative improvement in sqrt(loss / nFitPoints),
 % rather than in loss itself, for ConvergencePatience consecutive steps.
 %
-% GL, frequency-grid positions, and source params remain unchanged.
+% Frequency-grid positions and source params remain unchanged. T2 and GL are
+% shared by all shifted components and are alternated with the grid amplitudes.
 % Requires generateLineshapeGrid_1p3.m,
 % fitLineshapeGridAmplitudes_1p3.m and FastFIDgeneration_1p3.m.
 
@@ -45,10 +49,13 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     defaults = struct( ...
         'T2StartFactor', 1.2, ...
         'T2BoundsFactors', [0.5 3], ...
+        'GLStart', [], ...
+        'GLBounds', [0 2], ...
         'MaxIterations', 30, ...
         'RelativeTolerance', 1e-3, ...
         'ConvergencePatience', 3, ...
         'FminbndTolX', 1e-4, ...
+        'GLFminbndTolX', 1e-4, ...
         'UseNoiseInsensitiveLoss', false, ...
         'NoiseSigma', NaN, ...
         'ResidualNoiseSigma', 2.0, ...
@@ -67,6 +74,12 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         {'scalar', 'real', 'finite', 'positive'});
     validateattributes(options.T2BoundsFactors, {'numeric'}, ...
         {'vector', 'numel', 2, 'real', 'finite', 'positive'});
+    validateattributes(options.GLBounds, {'numeric'}, ...
+        {'vector', 'numel', 2, 'real', 'finite', 'nonnegative'});
+    if ~isempty(options.GLStart)
+        validateattributes(options.GLStart, {'numeric'}, ...
+            {'scalar', 'real', 'finite', 'nonnegative'});
+    end
     validateattributes(options.MaxIterations, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'integer', 'positive'});
     validateattributes(options.RelativeTolerance, {'numeric'}, ...
@@ -74,6 +87,8 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     validateattributes(options.ConvergencePatience, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'integer', 'positive'});
     validateattributes(options.FminbndTolX, {'numeric'}, ...
+        {'scalar', 'real', 'finite', 'positive'});
+    validateattributes(options.GLFminbndTolX, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'positive'});
     validateattributes(options.UseNoiseInsensitiveLoss, ...
         {'logical', 'numeric'}, {'scalar'});
@@ -86,6 +101,9 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 
     if options.T2BoundsFactors(1) >= options.T2BoundsFactors(2)
         error('T2BoundsFactors must be increasing.');
+    end
+    if options.GLBounds(1) >= options.GLBounds(2)
+        error('GLBounds must be increasing.');
     end
 
     useInsensitiveLoss = logical(options.UseNoiseInsensitiveLoss);
@@ -102,8 +120,9 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         error('This function requires a fitted single-spin reference.');
     end
     if ~isfinite(params.T2) || params.T2 <= 0 || ...
+            ~isfinite(params.GL) || params.GL < 0 || ...
             ~isfinite(params.Amp) || params.Amp <= 0
-        error('The fitted T2 and amplitude must be positive and finite.');
+        error('The fitted T2/amplitude must be positive and GL nonnegative.');
     end
     if isfield(expParams, 'SimulationShimPhase') && ...
             ~isempty(expParams.SimulationShimPhase)
@@ -149,8 +168,18 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     currentT2 = min(max(originalT2 * options.T2StartFactor, ...
         t2Bounds(1)), t2Bounds(2));
 
+    originalGL = double(params.GL);
+    glBounds = double(options.GLBounds(:).');
+    if isempty(options.GLStart)
+        currentGL = originalGL;
+    else
+        currentGL = double(options.GLStart);
+    end
+    currentGL = min(max(currentGL, glBounds(1)), glBounds(2));
+
     currentParams = params;
     currentParams.T2 = currentT2;
+    currentParams.GL = currentGL;
     currentGrid = generateLineshapeGrid_1p3( ...
         currentParams, expParams, AddLB, ppmGrid);
 
@@ -159,12 +188,15 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         fitMask, ppmGrid, referenceCS, delta, options, []);
     currentLoss = currentFit.objective;
 
-    history = makeHistoryRow(0, currentT2, currentFit, offsetsHz, NaN);
+    history = makeHistoryRow(0, currentT2, currentGL, ...
+        currentFit, offsetsHz, NaN);
     stopReason = 'Maximum iterations reached';
     smallImprovementStreak = 0;
     nFitPoints = nnz(fitMask);
-    searchOptions = optimset('Display', 'off', ...
+    t2SearchOptions = optimset('Display', 'off', ...
         'TolX', options.FminbndTolX);
+    glSearchOptions = optimset('Display', 'off', ...
+        'TolX', options.GLFminbndTolX);
 
     for iteration = 1:options.MaxIterations
         if useInsensitiveLoss && currentLoss <= 1e-12
@@ -178,13 +210,13 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         expWithKernel.SimulationShimPhase = modulation;
 
         objectiveT2 = @(logT2) fixedKernelLoss( ...
-            exp(logT2), params, expWithKernel, AddLB, ...
+            exp(logT2), currentGL, params, expWithKernel, AddLB, ...
             fitMask, experimentalReference(fitMask), delta);
 
         previousFixedLoss = objectiveT2(log(currentT2));
         [bestLogT2, bestFixedLoss] = fminbnd( ...
             objectiveT2, log(t2Bounds(1)), log(t2Bounds(2)), ...
-            searchOptions);
+            t2SearchOptions);
 
         if bestFixedLoss < previousFixedLoss - ...
                 1e-10 * max(1, previousFixedLoss)
@@ -193,8 +225,24 @@ function result = fitLineshapeAlternatingT2_1p3( ...
             proposedT2 = currentT2;
         end
 
+        objectiveGL = @(trialGL) fixedKernelLoss( ...
+            proposedT2, trialGL, params, expWithKernel, AddLB, ...
+            fitMask, experimentalReference(fitMask), delta);
+
+        previousFixedLossGL = objectiveGL(currentGL);
+        [bestGL, bestFixedLossGL] = fminbnd( ...
+            objectiveGL, glBounds(1), glBounds(2), glSearchOptions);
+
+        if bestFixedLossGL < previousFixedLossGL - ...
+                1e-10 * max(1, previousFixedLossGL)
+            proposedGL = bestGL;
+        else
+            proposedGL = currentGL;
+        end
+
         proposedParams = params;
         proposedParams.T2 = proposedT2;
+        proposedParams.GL = proposedGL;
         proposedGrid = generateLineshapeGrid_1p3( ...
             proposedParams, expParams, AddLB, ppmGrid);
 
@@ -216,10 +264,12 @@ function result = fitLineshapeAlternatingT2_1p3( ...
             max(previousObjectiveRMSE, eps));
 
         currentT2 = proposedT2;
+        currentGL = proposedGL;
         currentFit = proposedFit;
         currentLoss = proposedLoss;
         history(end+1) = makeHistoryRow( ...
-            iteration, currentT2, currentFit, offsetsHz, improvement); %#ok<AGROW>
+            iteration, currentT2, currentGL, currentFit, ...
+            offsetsHz, improvement); %#ok<AGROW>
 
         if useInsensitiveLoss && currentLoss <= 1e-12
             stopReason = 'All fitting residuals are within the noise tolerance';
@@ -243,7 +293,11 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     result.T2Start = history(1).T2;
     result.T2Optimized = currentT2;
     result.T2Bounds = t2Bounds;
-    result.GLFixed = params.GL;
+    result.GLOriginal = originalGL;
+    result.GLStart = history(1).GL;
+    result.GLOptimized = currentGL;
+    result.GLBounds = glBounds;
+    result.GLFixed = currentGL; % Legacy field until the GUI printout is updated.
     result.offsetsHz = offsetsHz;
     result.meanOffsetHz = sum(currentFit.weights(:) .* offsetsHz);
     result.rmsOffsetHz = sqrt(sum(currentFit.weights(:) .* ...
@@ -261,12 +315,16 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         result.rmseAfter / max(result.rmseBefore, eps));
     result.nearT2Bound = currentT2 <= 1.01*t2Bounds(1) || ...
         currentT2 >= 0.99*t2Bounds(2);
+    glTol = 0.01 * max(glBounds(2) - glBounds(1), eps);
+    result.nearGLBound = currentGL <= glBounds(1) + glTol || ...
+        currentGL >= glBounds(2) - glTol;
     result.UseNoiseInsensitiveLoss = useInsensitiveLoss;
     result.noiseSigma = options.NoiseSigma;
     result.noiseThreshold = delta;
 
     finalParams = params;
     finalParams.T2 = currentT2;
+    finalParams.GL = currentGL;
     finalExpParams = expParams;
     finalExpParams.SimulationShimPhase = result.SimulationShimPhase;
     checkSpectrum = params.Amp * result.totalCoefficient * ...
@@ -360,10 +418,12 @@ function fitResult = fitAmplitudes( ...
 end
 
 function value = fixedKernelLoss( ...
-    trialT2, params, expWithKernel, AddLB, fitMask, targetWindow, delta)
+    trialT2, trialGL, params, expWithKernel, AddLB, ...
+    fitMask, targetWindow, delta)
 
     trialParams = params;
     trialParams.T2 = trialT2;
+    trialParams.GL = trialGL;
     template = params.Amp * FastFIDgeneration_1p3( ...
         trialParams, expWithKernel, AddLB);
     template = real(double(template(fitMask)));
@@ -434,12 +494,13 @@ function value = insensitiveLoss(residual, delta)
     value = sum(excess.^2);
 end
 
-function row = makeHistoryRow(iteration, T2, fitResult, offsetHz, improvement)
+function row = makeHistoryRow(iteration, T2, GL, fitResult, offsetHz, improvement)
     weights = fitResult.weights(:);
     meanHz = weights.' * offsetHz;
     row = struct( ...
         'iteration', iteration, ...
         'T2', T2, ...
+        'GL', GL, ...
         'rmse', fitResult.rmseAfter, ...
         'insensitiveRMSE', fitResult.insensitiveRMSE, ...
         'objective', fitResult.objective, ...

@@ -46,9 +46,6 @@
 % Pivot:
 %   Optional,Pivot identifies the spin site used as the reference when applicable.
 %
-% notes:
-%   Human-readable label for the database entry; here it is normally set
-%   equal to the metabolite field name.
 %
 % Important maintenance notes
 % ---------------------------
@@ -76,8 +73,7 @@ w_CS_J  = [ 4.7   6   ;...
 T1  =   [1 1];  T2  =   [0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [1,1], 'base_level', 2, 'space_level', 2, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [1,1], 'base_level', 2, 'space_level', 2);
 %% %simple2
 metabolite='simple2';
 w_CS_J  = [ 2     4       5   ;...
@@ -87,8 +83,7 @@ w_CS_J  = [ 2     4       5   ;...
 T1  =   [1 1 1];    T2  =   [0.2 0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [1,2], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [1,2], 'base_level', 3, 'space_level', 3);
 %% %simpleN
 metabolite='simpleN';
 w_CS_J  = [ 2     0       50   ;...
@@ -98,8 +93,7 @@ w_CS_J  = [ 2     0       50   ;...
 T1  =   [1 1 1];    T2  =   [0.2 0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","14N","31P"],...
-                   'IsotopeCount', [1,1,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [1,1,1], 'base_level', 3, 'space_level', 3);
 %% %simpleC
 metabolite='simpleC';
 w_CS_J  = [ 2     0       0   ;...
@@ -109,8 +103,7 @@ w_CS_J  = [ 2     0       0   ;...
 T1  =   [1 1 1];    T2  =   [0.2 0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","13C","31P"],...
-                   'IsotopeCount', [1,1,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [1,1,1], 'base_level', 3, 'space_level', 3);
 %% %OPMe3 no protons
 metabolite='OPMe3_noH';
 w_CS_J = [ 0     0      0       56.5887    ;...
@@ -121,8 +114,7 @@ w_CS_J = [ 0     0      0       56.5887    ;...
 T1  =   [1 1 1 1];    T2  =   [0.2 0.2 0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["13C","31P"],...
-                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3);
 %% Trimethylphospine
 metabolite='TMP_noH';
 w_CS_J = [ 0     0      0       70    ;...
@@ -133,8 +125,7 @@ w_CS_J = [ 0     0      0       70    ;...
 T1  =   [1 1 1 1];    T2  =   [0.2 0.2 0.2 0.2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["13C","31P"],...
-                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3);
 % %% %simple2b
 % metabolite='simple2b';
 % w_CS_J  = [ 0.6     10      0       0
@@ -161,8 +152,7 @@ T1 = [0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [3,2], 'base_level', 3, 'space_level', 3, 'Pivot',[3,2],...
-                   'notes', metabolite);
+                   'IsotopeCount', [3,2], 'base_level', 3, 'space_level', 3, 'Pivot',[3,2]);
 %% 3PG
 metabolite = 'PG3';
 w_CS_J = [3.8199	-11.16706038	2.773298795	6.0690
@@ -175,8 +165,7 @@ T1 = [0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [3,1], 'base_level', 3, 'space_level', 3);
 %% 6PG
 metabolite = 'PG6';
 w_CS_J = [3.750375821	11.59737489	5.019092491	0	0	0	7.4
@@ -192,8 +181,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [6,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [6,1], 'base_level', 4, 'space_level', 4);
 %% ADP
 metabolite = 'NDP';
 w_CS_J = [3.997249538	-11.831	2.9621	0	0	0	0	0	0	4.2695
@@ -212,8 +200,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,2], 'block_sizes', [6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,2], 'block_sizes', [6,2]);
 %% test 2
 metabolite = 'test2';
 w_CS_J = [3.997249538	-11.831	2.9621	0	0	0	0	0	0	4.2695
@@ -232,8 +219,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","14N","31P"],...
-                   'IsotopeCount', [7,1,2], 'block_sizes', [6,1],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1,2], 'block_sizes', [6,1]);
 %% AMP
 metabolite = 'AMP';
 w_CS_J = [3.805	-12	2.6	0	0	0	0	0	4
@@ -251,8 +237,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,1], 'block_sizes', [6,2], 'base_level', 4, 'space_level', 1,  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,1], 'block_sizes', [6,2], 'base_level', 4, 'space_level', 1);
 
 %% ATP
 metabolite = 'NTP';
@@ -274,8 +259,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,3], 'block_sizes', [6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,3], 'block_sizes', [6,2]);
 %% CDPCh (Citicoline) full (without 14N)
 metabolite = 'CDPChfw';
 w_CS_J =  [3.035329634	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
@@ -307,8 +291,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [21,2], 'block_sizes', [3,3,3,4,6,2],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [21,2], 'block_sizes', [3,3,3,4,6,2],'base_level', 4, 'space_level', 4);
 %% CDPCh (Citicoline) full (with 14N)
 metabolite = 'CDPChf';
 w_CS_J =  [3.035329634	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.6
@@ -341,8 +324,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 2 0.1];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P","14N"],...
-                   'IsotopeCount', [21,2,1], 'block_sizes', [3,3,3,4,6,2],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [21,2,1], 'block_sizes', [3,3,3,4,6,2],'base_level', 4, 'space_level', 4);
 %% CDPCh (Citicoline) tocsy
 metabolite = 'CDPCh';
 w_CS_J =  [4.205181282	12.11736243	2.500433116	7.001554416	0	0	0	0	0	0	5.07	0
@@ -363,8 +345,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 2];
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [10,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [10,2], 'base_level', 4, 'space_level', 4);
 %% CDPEA - under construction
 metabolite = 'CDPEA';
 w_CS_J = [3.98	11.2	1.83	7.9	  0     6.8
@@ -378,8 +359,7 @@ w_CS_J = [3.98	11.2	1.83	7.9	  0     6.8
 T1 = [0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [5,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [5,1], 'base_level', 3, 'space_level', 3);
 %% NADp (actually NADH) - under construction
 metabolite = 'NADp';
 w_CS_J = [3.905 4
@@ -389,8 +369,7 @@ w_CS_J = [3.905 4
 T1 = [ 0.4 2];
 T2 = [ 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [1,1], 'base_level', 2, 'space_level', 2, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [1,1], 'base_level', 2, 'space_level', 2);
 
 
 %% CMP
@@ -411,8 +390,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,1], 'block_sizes', [6,2], 'base_level', 4, 'space_level', 1,  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,1], 'block_sizes', [6,2], 'base_level', 4, 'space_level', 1);
 %% CMPtocsy
 metabolite = 'CMP';
 w_CS_J = [3.7748	-11.8935	2.814	0	0	0	4.89
@@ -428,8 +406,7 @@ T1 = [0.25 0.25 0.25 0.25 0.25 0.25 2];
 T2 = [0.25 0.25 0.25 0.25 0.25 0.25 2];
 
 simDB.CMP = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                  'IsotopeCount', [6,1], 'base_level', 4, 'space_level', 1, ...
-                  'notes', metabolite);
+                  'IsotopeCount', [6,1], 'base_level', 4, 'space_level', 1);
 %% CoA
 metabolite = 'CoAf';
 w_CS_J = [4.016	11.38381799	2.411700072	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4.5	0
@@ -466,8 +443,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2  0.14 0.14 0.24];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [25,3],'block_sizes', [6,2,3,3,1,4,4,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [25,3],'block_sizes', [6,2,3,3,1,4,4,2], 'base_level', 4, 'space_level', 4);
 %% CoA tocsy
 metabolite = 'CoA';
 w_CS_J = [4.016	11.38381799	2.411700072	0	0	0	0	0	0	4.5	0
@@ -487,8 +463,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2  2 2 2];
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.14 0.14 0.24];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,3], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,3], 'base_level', 4, 'space_level', 4);
 %% FADH2
 metabolite = 'FADH2f';
 w_CS_J =  [4.110601889	-12.02384812	3.317546611	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6.6
@@ -522,8 +497,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.12 0.12];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [23,2],'block_sizes', [6,7,6,2,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [23,2],'block_sizes', [6,7,6,2,2], 'base_level', 4, 'space_level', 4);
 %% FADH2 tocsy
 metabolite = 'FADH2';
 w_CS_J =  [4.110601889	-12.02384812	3.317546611	0	0	0	0	0	0	0	0	0	0	0	6.6
@@ -547,8 +521,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 2];
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.12 0.12];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [13,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [13,2], 'base_level', 4, 'space_level', 4);
 %% G3P
 metabolite = 'G3P';
 w_CS_J = [3.4875	11.8	4.7	0	0	6.71
@@ -563,8 +536,7 @@ T1 =[0.4 0.4 0.4 0.4 0.4 2];
 T2 =[0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [5,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [5,1], 'base_level', 4, 'space_level', 4);
 
 
 %% G6Pc
@@ -582,8 +554,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 %% G6Pt
 metabolite = 'G6Pt';
 w_CS_J = [3.847    -12        3.9       0       0       0       0       6.3    ;...
@@ -599,8 +570,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 %% G1P
 metabolite = 'G1P';
 w_CS_J = [3.8     -11        2.1       0       0       0       0       0    ;...
@@ -616,8 +586,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 
 %% Gal1P
 metabolite = 'Gal1P';
@@ -634,8 +603,7 @@ w_CS_J = [5.294	3.7	0	0	0	0	0	7.4
 T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 
 %% GPC full no 14N
 metabolite = 'GPC_no14N';
@@ -664,8 +632,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2]
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [18,1], 'block_sizes', [3,3,3,4,5],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,1], 'block_sizes', [3,3,3,4,5],'base_level', 4, 'space_level', 4);
 %% GPC full with 14N
 metabolite = 'GPC';
 w_CS_J =  [3.035	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.6
@@ -694,8 +661,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 0.1];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P","14N"],...
-                   'IsotopeCount', [18,1,1], 'block_sizes', [3,3,3,4,5],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,1,1], 'block_sizes', [3,3,3,4,5],'base_level', 4, 'space_level', 4);
 %% GPCtocsy
 metabolite = 'GPC';
 w_CS_J =  [4.131	12	2.5	6.5	0	0	0	0	0	5.6
@@ -714,8 +680,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [9,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [9,1], 'base_level', 4, 'space_level', 4);
 %% GPE
 metabolite = 'GPE';
 w_CS_J =  [3.88    -11       4         4       0       0       0       0        0       4;...
@@ -733,8 +698,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.GPE = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2,'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [9,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [9,1], 'base_level', 4, 'space_level', 4);
 %% FBP alpha
 metabolite = 'FBPa';
 w_CS_J = [3.742	-11	3	0	0	0	0	0	5.5
@@ -752,8 +716,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,2], 'base_level', 4, 'space_level', 4);
 %% FBP beta
 metabolite = 'FBPt';
 w_CS_J = [3.714	-11	3.5	0	0	0	0	0	5.4
@@ -771,8 +734,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,2], 'base_level', 4, 'space_level', 4);
 %% M6P alpha
 metabolite = 'M6Pa';
 w_CS_J = [ 3.79151823	11.03268556	4.265371261	0	0	0	0	6.754043776
@@ -789,8 +751,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 %% M6P beta
 metabolite = 'M6Pb';
 w_CS_J = [3.829292247	11.8123123	4.441269206	0	0	0	0	6.706999279
@@ -807,8 +768,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [7,1], 'base_level', 4, 'space_level', 4);
 
 % %% MPHO
 % metabolite = 'MPHO';
@@ -821,8 +781,7 @@ simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1
 % T2 = [0.4 0.4 0.4 2];
 % 
 % simDB.MPHO = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, ...
-%                    'nHSpins', 3, 'base_level', 3, 'space_level', 3, ...
-%                    'notes', metabolite);
+%                    'nHSpins', 3, 'base_level', 3, 'space_level', 3);
 %% NADH full
 metabolite = 'NADHf';
 w_CS_J =  [4.014630218	11.73378087	3.062340411	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4.97	0
@@ -851,8 +810,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [18,2],'block_sizes', [6,6,4,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,2],'block_sizes', [6,6,4,2], 'base_level', 4, 'space_level', 4);
 %% NADH tocsy
 metabolite = 'NADH';
 w_CS_J =  [4.034630218	11.73378087	3.062340411	0	0	0	0	0	0	0	0	0	4.97	0
@@ -875,8 +833,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [12,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [12,2], 'base_level', 4, 'space_level', 4);
 %% NADPH TOCSY reach
 metabolite = 'NADPH';
 w_CS_J =  [4.000216525	-11.80321359	4.127004082	0	0	0	0	0	0	0	0	0	5.25	0	0
@@ -901,8 +858,7 @@ T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2 2];
 
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [12,3], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [12,3], 'base_level', 4, 'space_level', 4);
 %% NADPH full
 metabolite = 'NADPHf';
 w_CS_J =  [4.000216525	-11.80321359	4.127004082	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5.25	0	0
@@ -932,8 +888,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 .2
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 .2 .2 .2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [18,3],'block_sizes', [6,6,4,2], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,3],'block_sizes', [6,6,4,2], 'base_level', 4, 'space_level', 4);
 % 
 % 
 
@@ -960,8 +915,7 @@ T1 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 0.1];
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 2 0.1];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P","14N"],...
-                   'IsotopeCount', [13,1,1], 'block_sizes', [3,3,3,4],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [13,1,1], 'block_sizes', [3,3,3,4],'base_level', 4, 'space_level', 4);
 %% PCHO tocsy
 metabolite = 'PCHO';
 w_CS_J =[ 3.964334749	10.64043351	7.345058282	2.444277522	5.6
@@ -975,8 +929,7 @@ T1 = [0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [4,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [4,1], 'base_level', 4, 'space_level', 4);
 %% PCR
 metabolite = 'PCR';
 w_CS_J = [3.7552	0	0	0	0
@@ -989,8 +942,7 @@ w_CS_J = [3.7552	0	0	0	0
 T1 = [0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [4,1], 'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [4,1], 'base_level', 4, 'space_level', 4);
 
 %% PEA
 metabolite = 'PEA';
@@ -1004,8 +956,7 @@ w_CS_J = [3.7694	11.18986673	1.790675093	7.943841572	6.8
 T1 = [0.4 0.4 0.4 0.4 2];
 T2 = [0.4 0.4 0.4 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [4,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [4,1], 'base_level', 3, 'space_level', 3);
 %% PEP
 metabolite = 'PEP';
 w_CS_J = [5.1531	1.2347	1.32
@@ -1016,8 +967,7 @@ w_CS_J = [5.1531	1.2347	1.32
 T1 = [0.4 0.4 2];
 T2 = [0.4 0.4 2];
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [2,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [2,1], 'base_level', 3, 'space_level', 3);
 %% R1P
 metabolite = 'R1P';
 w_CS_J = [5.415560862	4.052157995	0	0	0	0	6
@@ -1033,8 +983,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 2];
 T2 = [0.2 0.2 0.2 0.2 0.2 0.2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [6,1], 'base_level', 3, 'space_level', 3, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [6,1], 'base_level', 3, 'space_level', 3);
 %% S7P
 metabolite = 'S7P';
 w_CS_J = [3.6262	11.53915116	5.97	0	0	0	0	0	7.1
@@ -1052,8 +1001,7 @@ T1 = [0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 2];
 T2 = [0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [8,1], 'block_sizes', [6,2],'base_level', 4, 'space_level', 4, ...
-                   'notes', metabolite);
+                   'IsotopeCount', [8,1], 'block_sizes', [6,2],'base_level', 4, 'space_level', 4);
 
 % %% UDPG
 % metabolite = 'UDPG';
@@ -1106,8 +1054,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [15,2], 'block_sizes', [7,6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [15,2], 'block_sizes', [7,6,2]);
 %% UDPGA
 metabolite = 'UDPGA';
 w_CS_J =  [5.4454	3.7	0	0	0	0	0	0	0	0	0	0	0	0	6
@@ -1131,8 +1078,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [13,2], 'block_sizes', [5,6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [13,2], 'block_sizes', [5,6,2]);
 %% UDPGal
 metabolite = 'UDPGal';
 w_CS_J =  [5.445298074	3.738681017	0	0	0	0	0	0	0	0	0	0	0	0	0	0	7
@@ -1158,8 +1104,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [15,2], 'block_sizes', [7,6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [15,2], 'block_sizes', [7,6,2]);
 
 %% UDPNAcGal
 metabolite = 'UDPNAcGal';
@@ -1189,8 +1134,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [18,2], 'block_sizes', [3,7,6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,2], 'block_sizes', [3,7,6,2]);
 %% UDPNAcGlu
 metabolite = 'UDPNAcGlu';
 w_CS_J =  [1.883322592	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
@@ -1219,8 +1163,7 @@ T1 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 
 T2 = [0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 2 2];
 
 simDB.(metabolite) = struct('w_CS_J', w_CS_J, 'T1', T1, 'T2', T2, 'Isotopes',["1H","31P"],...
-                   'IsotopeCount', [18,2], 'block_sizes', [3,7,6,2],  ...
-                   'notes', metabolite);
+                   'IsotopeCount', [18,2], 'block_sizes', [3,7,6,2]);
 % %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % % %% CMPfull

@@ -456,7 +456,9 @@ elseif expParams.WDW==4 && expParams.SSB == 2
     window(TDeff/2:np(1))=0;%Zero fill 
     FID=FID.*window;
 else
-    uialert(app.UIFigure, 'This appodization window is not defined, modify in topspin or go to getTopSpinAddLB.m script and add it', 'Error');
+    error('MRSHIFT:UnsupportedApodization', ...
+        ['This apodization window is not defined. ' ...
+         'Modify it in TopSpin or add support for it in getTopSpinAddLB.m.']);
 end
 
 if strcmp(LBmode, 'extra') && ~isempty(AddLB) && AddLB~=0 && expParams.WDW~=1

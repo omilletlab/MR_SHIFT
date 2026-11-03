@@ -257,7 +257,9 @@ elseif WDW==3
     elseif SSB == 2
         window = cos(x);  % cos(0 to π/2) = 1 to 0
     else
-        uialert(app.UIFigure, 'This appodization window is not defined, modify in topspin or go to getTopSpinAddLB.m script and add it', 'Error');
+    error('MRSHIFT:UnsupportedApodization', ...
+        ['This apodization window is not defined. ' ...
+         'Modify it in TopSpin or add support for it in getTopSpinAddLB.m.']);
     end
     window(end:ZeroFill)=0;
     data=data.*window';
@@ -268,12 +270,16 @@ elseif WDW==4
         elseif SSB == 2
             window = cos(x).^2;  % cos(0 to π/2) = 1 to 0
         else
-            uialert(app.UIFigure, 'This appodization window is not defined, modify in topspin or go to getTopSpinAddLB.m script and add it', 'Error');
+        error('MRSHIFT:UnsupportedApodization', ...
+            ['This apodization window is not defined. ' ...
+             'Modify it in TopSpin or add support for it in getTopSpinAddLB.m.']);
         end
         window(end:ZeroFill)=0;
         data=data.*window';
 else
-    uialert(app.UIFigure, 'This appodization window is not defined, modify in topspin or go to getTopSpinAddLB.m script and add it', 'Error');
+error('MRSHIFT:UnsupportedApodization', ...
+    ['This apodization window is not defined. ' ...
+     'Modify it in TopSpin or add support for it in getTopSpinAddLB.m.']);
 end
 
 if strcmp(LBmode, 'extra') && AddLB~=0 && WDW~=1

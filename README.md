@@ -205,10 +205,18 @@ A typical MR-SHIFT workflow is:
 2. Select a metabolite database.
 3. Select the Bruker TopSpin data directory and experiment/processing numbers.
 4. Plot the experimental spectrum.
-5. Add metabolites from the database.
+5. Add metabolites from the database. Double-click a metabolite in the tree to access and edit its NMR parameters.
 6. Simulate the selected spin systems.
 7. Fit amplitudes, chemical shifts, T2 values, or other selected parameters as required.
 8. Save the resulting simulation or fit.
+
+
+### Interactive NMR Parameter Editor
+
+Double-click any metabolite in the metabolite tree to open its NMR parameter table. This provides direct access to the underlying spin-system parameters, including chemical shifts, J-coupling constants, relaxation times, and lineshape parameters.
+
+Users can inspect and manually modify these values directly within the graphical interface. Saving the changes automatically updates the corresponding simulated spectrum.
+
 
 ## Example dataset
 

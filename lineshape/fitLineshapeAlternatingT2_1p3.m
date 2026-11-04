@@ -1,11 +1,11 @@
 function result = fitLineshapeAlternatingT2_1p3( ...
-    params, expParams, AddLB, ppmGrid, experimentalReference, fitMask, options)
+    params, expParams, AddLB, ppmGrid, experimentalReference, fitMask, options, LBmode)
 % Fit a single-spin reference with a frequency-offset grid and shared T2/GL.
 %
 % Inputs
 %   params                Previously fitted single-spin MR-SHIFT parameters.
 %   expParams             Acquisition and processing parameters.
-%   AddLB                 Existing extra broadening setting.
+%   AddLB                 Broadening value (interpretation given by LBmode).
 %   ppmGrid               Fixed grid positions, in ppm.
 %   experimentalReference Experimental spectrum after subtracting other fits.
 %   fitMask               Logical mask for the reference fitting interval.
@@ -28,6 +28,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 %                               (default 2.0).
 %       AmpMaxIterations       Maximum amplitude MM steps (default 40).
 %       AmpRelativeTolerance   Amplitude MM tolerance (default 1e-6).
+%   LBmode                'extra' (default) or 'total', as in MR-SHIFT.
 %
 % When enabled, the epsilon-insensitive loss is
 %   sum(max(abs(experimental - predicted) - delta, 0).^2),
@@ -44,6 +45,9 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 
     if nargin < 7 || isempty(options)
         options = struct();
+    end
+    if nargin < 8 || isempty(LBmode)
+        LBmode = 'extra';
     end
 
     defaults = struct( ...
@@ -149,7 +153,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 
     if ~isfield(params, 'Skeleton') || isempty(params.Skeleton)
         [~, params.Skeleton] = NSpin_Simulation_1p3( ...
-            params, expParams, AddLB);
+            params, expParams, AddLB, LBmode);
     end
     if ~isscalar(params.Skeleton) || numel(params.Skeleton.freqAll) ~= 1
         error('The reference must contain a single simulated transition.');
@@ -160,7 +164,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     t = (0:expParams.TDeff/2-1) * expParams.dwell;
 
     originalSpectrum = params.Amp * FastFIDgeneration_1p3( ...
-        params, expParams, AddLB);
+        params, expParams, AddLB, LBmode);
     originalSpectrum = real(originalSpectrum(:));
 
     originalT2 = double(params.T2);
@@ -181,7 +185,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     currentParams.T2 = currentT2;
     currentParams.GL = currentGL;
     currentGrid = generateLineshapeGrid_1p3( ...
-        currentParams, expParams, AddLB, ppmGrid);
+        currentParams, expParams, AddLB, ppmGrid, LBmode);
 
     currentFit = fitAmplitudes( ...
         currentGrid, originalSpectrum, experimentalReference, ...
@@ -211,7 +215,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 
         objectiveT2 = @(logT2) fixedKernelLoss( ...
             exp(logT2), currentGL, params, expWithKernel, AddLB, ...
-            fitMask, experimentalReference(fitMask), delta);
+            fitMask, experimentalReference(fitMask), delta, LBmode);
 
         previousFixedLoss = objectiveT2(log(currentT2));
         [bestLogT2, bestFixedLoss] = fminbnd( ...
@@ -227,7 +231,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
 
         objectiveGL = @(trialGL) fixedKernelLoss( ...
             proposedT2, trialGL, params, expWithKernel, AddLB, ...
-            fitMask, experimentalReference(fitMask), delta);
+            fitMask, experimentalReference(fitMask), delta, LBmode);
 
         previousFixedLossGL = objectiveGL(currentGL);
         [bestGL, bestFixedLossGL] = fminbnd( ...
@@ -244,7 +248,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
         proposedParams.T2 = proposedT2;
         proposedParams.GL = proposedGL;
         proposedGrid = generateLineshapeGrid_1p3( ...
-            proposedParams, expParams, AddLB, ppmGrid);
+            proposedParams, expParams, AddLB, ppmGrid, LBmode);
 
         proposedFit = fitAmplitudes( ...
             proposedGrid, originalSpectrum, experimentalReference, ...
@@ -328,7 +332,7 @@ function result = fitLineshapeAlternatingT2_1p3( ...
     finalExpParams = expParams;
     finalExpParams.SimulationShimPhase = result.SimulationShimPhase;
     checkSpectrum = params.Amp * result.totalCoefficient * ...
-        FastFIDgeneration_1p3(finalParams, finalExpParams, AddLB);
+        FastFIDgeneration_1p3(finalParams, finalExpParams, AddLB, LBmode);
     result.fidConsistencyError = norm( ...
         real(checkSpectrum(:)) - result.fittedSpectrum(:)) / ...
         max(norm(result.fittedSpectrum(:)), eps);
@@ -419,13 +423,13 @@ end
 
 function value = fixedKernelLoss( ...
     trialT2, trialGL, params, expWithKernel, AddLB, ...
-    fitMask, targetWindow, delta)
+    fitMask, targetWindow, delta, LBmode)
 
     trialParams = params;
     trialParams.T2 = trialT2;
     trialParams.GL = trialGL;
     template = params.Amp * FastFIDgeneration_1p3( ...
-        trialParams, expWithKernel, AddLB);
+        trialParams, expWithKernel, AddLB, LBmode);
     template = real(double(template(fitMask)));
     template = template(:);
     y = targetWindow(:);

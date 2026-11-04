@@ -223,15 +223,15 @@ t=t-t(tzero);
 switch LBmode
     case 'extra'
         if AddLB~=0
-            effectiveExpDecay = LB*2 + 1/AddLB;
+            effectiveExpDecay = LB*pi + 1/AddLB;
             extraExpDecay = 1/AddLB;
         else
-            effectiveExpDecay = LB*2;
+            effectiveExpDecay = LB*pi;
             extraExpDecay = 0;
         end
 
     case 'total'
-        effectiveExpDecay = AddLB*2;
+        effectiveExpDecay = AddLB*pi;
         extraExpDecay = [];
 
     otherwise

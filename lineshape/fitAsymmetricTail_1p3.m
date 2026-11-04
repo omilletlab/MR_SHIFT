@@ -1,11 +1,11 @@
 function result = fitAsymmetricTail_1p3( ...
-    params, expParams, AddLB, experimentalReference, fitMask, options)
+    params, expParams, AddLB, experimentalReference, fitMask, options, LBmode)
 % Fit a single-spin reference using T2, GL, CS shift and an asymmetric tail.
 %
 % Inputs
 %   params                Previously fitted single-spin MR-SHIFT parameters.
 %   expParams             Acquisition and processing parameters.
-%   AddLB                 Existing additional line-broadening setting.
+%   AddLB                 Broadening value (interpretation given by LBmode).
 %   experimentalReference Experimental spectrum with other fits subtracted.
 %   fitMask               Logical mask of points used for fitting.
 %   options               Optional fields:
@@ -21,6 +21,7 @@ function result = fitAsymmetricTail_1p3( ...
 %       UseNoiseInsensitiveLoss Use squared epsilon-insensitive loss.
 %       NoiseSigma             Experimental noise standard deviation.
 %       ResidualNoiseSigma     Threshold multiplier (default 2).
+%   LBmode                'extra' (default) or 'total', as in MR-SHIFT.
 %
 % T2, GL, reference CS shift and lambda are nonlinear parameters.
 % Amplitude is fitted linearly or with a one-dimensional noise-insensitive
@@ -31,6 +32,9 @@ function result = fitAsymmetricTail_1p3( ...
 
     if nargin < 6 || isempty(options)
         options = struct();
+    end
+    if nargin < 7 || isempty(LBmode)
+        LBmode = 'extra';
     end
 
     defaults = struct( ...
@@ -92,7 +96,7 @@ end
     end
     if ~isfield(params, 'Skeleton') || isempty(params.Skeleton)
         [~, params.Skeleton] = NSpin_Simulation_1p3( ...
-            params, expParams, AddLB);
+            params, expParams, AddLB, LBmode);
     end
     if ~isscalar(params.Skeleton) || numel(params.Skeleton.freqAll) ~= 1
         error('The reference must have a single simulated transition.');
@@ -120,7 +124,7 @@ end
     y = target(fitMask);
     t = (0:expParams.TDeff/2-1) * expParams.dwell;
     originalSpectrum = real(params.Amp * ...
-        FastFIDgeneration_1p3(params, expParams, AddLB));
+        FastFIDgeneration_1p3(params, expParams, AddLB, LBmode));
     originalSpectrum = originalSpectrum(:);
 
     simplexOptions = optimset('Display', 'off', ...
@@ -258,7 +262,7 @@ trialExpParams.SimulationShimPhase = ...
     tailModulation .* exp(1i * 2*pi * csShiftHz * t);
 
         template = real(params.Amp * ...
-            FastFIDgeneration_1p3(trialParams, trialExpParams, AddLB));
+            FastFIDgeneration_1p3(trialParams, trialExpParams, AddLB, LBmode));
         template = template(:);
         x = template(fitMask);
         denominator = x.' * x;

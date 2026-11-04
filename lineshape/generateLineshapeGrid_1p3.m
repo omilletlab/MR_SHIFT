@@ -1,9 +1,13 @@
 
-function [gridSpectra, originalSpectrum] = generateLineshapeGrid_1p3(params, expParams, AddLB, ppmGrid)
+function [gridSpectra, originalSpectrum] = generateLineshapeGrid_1p3(params, expParams, AddLB, ppmGrid, LBmode)
+
+    if nargin < 5 || isempty(LBmode)
+        LBmode = 'extra';
+    end
 
     if ~isfield(params, 'Skeleton') || isempty(params.Skeleton)
         [~, params.Skeleton] = NSpin_Simulation_1p3( ...
-            params, expParams, AddLB);
+            params, expParams, AddLB, LBmode);
     end
 
     if ~isscalar(params.w_CS_J) || ...
@@ -19,7 +23,7 @@ function [gridSpectra, originalSpectrum] = generateLineshapeGrid_1p3(params, exp
     originalFreqHz = params.Skeleton.freqAll;
 
     originalSpectrum = params.Amp * FastFIDgeneration_1p3( ...
-        params, expParams, AddLB);
+        params, expParams, AddLB, LBmode);
 
     gridSpectra = zeros(numel(originalSpectrum), numel(ppmGrid));
 
@@ -31,7 +35,7 @@ function [gridSpectra, originalSpectrum] = generateLineshapeGrid_1p3(params, exp
         shiftedParams.Skeleton.freqAll = originalFreqHz + offsetHz;
 
         gridSpectra(:, k) = params.Amp * FastFIDgeneration_1p3( ...
-            shiftedParams, expParams, AddLB);
+            shiftedParams, expParams, AddLB, LBmode);
 
     end
 

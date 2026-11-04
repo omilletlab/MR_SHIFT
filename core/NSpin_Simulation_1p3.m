@@ -434,13 +434,13 @@ elseif expParams.WDW==1
     switch LBmode
         case 'extra'
             if AddLB ~= 0
-                effectiveExpDecay = expParams.LB*2 + 1/AddLB;
+                effectiveExpDecay = expParams.LB*pi + 1/AddLB;
             else
-                effectiveExpDecay = expParams.LB*2;
+                effectiveExpDecay = expParams.LB*pi;
             end
     
         case 'total'
-            effectiveExpDecay = AddLB*2;
+            effectiveExpDecay = AddLB*pi;
     
         otherwise
             error('Unknown LBmode: %s', LBmode);

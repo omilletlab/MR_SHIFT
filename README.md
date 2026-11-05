@@ -4,13 +4,29 @@ MR-SHIFT is a MATLAB App Designer application for simulating, fitting, and analy
 
 The app is designed to work with processed Bruker TopSpin data and supports simulation and fitting workflows for 1D spectra, T1/T2 relaxation analyses, lineshape distortions, and selected 2D simulations.
 
-## Stable publication version
+## Releases and reproducibility
 
-The validated version of MR-SHIFT associated with the publication is **v1.3.0**.
+### Latest stable release — v1.3.1
 
-For reproducibility of the analyses reported in the manuscript, please use the [v1.3.0 release](../../releases/tag/v1.3.0).
+**MR-SHIFT v1.3.1** is the latest stable release of the application.
 
-The `main` branch may contain newer features, improvements, and ongoing developments that have not yet undergone the same level of validation.
+This maintenance update focuses on improving the reliability, usability, and overall user experience of existing MR-SHIFT functionalities. It incorporates bug fixes, code refinements, and improvements to the graphical user interface and associated tools.
+
+**[Download MR-SHIFT v1.3.1](https://github.com/omilletlab/MR_SHIFT/releases/tag/v1.3.1)**
+
+### Publication reference version — v1.3.0
+
+**MR-SHIFT v1.3.0** is the validated reference version associated with the original scientific publication.
+
+To ensure exact reproducibility of the implementation described in the manuscript, the original version remains permanently available:
+
+**[Download publication reference v1.3.0](https://github.com/omilletlab/MR_SHIFT/releases/tag/v1.3.0)**
+
+Subsequent versions incorporate improvements and corrections that may not be part of the original publication validation.
+
+Users are encouraged to download the latest stable release for general use and to specify the MR-SHIFT version used when reporting scientific results.
+
+The `main` branch may contain ongoing development changes. Tagged releases provide fixed versions of the software for reproducible analyses.
 
 ## Repository structure
 

@@ -10,7 +10,7 @@ The app is designed to work with processed Bruker TopSpin data and supports simu
 
 **MR-SHIFT v1.3.1** is the latest stable release of the application.
 
-This maintenance update focuses on improving the reliability, usability, and overall user experience of existing MR-SHIFT functionalities. It incorporates bug fixes, code refinements, and improvements to the graphical user interface and associated tools.
+This maintenance update introduces refinements to the spectral line-shape models, improving their ability to accommodate deviations from ideal Gaussian and Lorentzian profiles. It also incorporates bug fixes, code optimizations, and improvements to the graphical user interface and supporting tools, enhancing the overall reliability and usability of MR-SHIFT.
 
 **[Download MR-SHIFT v1.3.1](https://github.com/omilletlab/MR_SHIFT/releases/tag/v1.3.1)**
 
